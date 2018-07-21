@@ -1,3 +1,4 @@
+"use strict";
 /**
  * This content is released under The MIT License
  *

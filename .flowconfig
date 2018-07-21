@@ -2,8 +2,6 @@
 .*/build/.*
 .*/packages/.*/lib
 .*/packages/.*/test
-.*/codemods/.*/lib
-.*/codemods/.*/test
 .*/node_modules/conventional-changelog-core/
 
 [include]
