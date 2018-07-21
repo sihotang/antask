@@ -1,0 +1,35 @@
+{
+  "presets": [
+    ["@babel/preset-env", {
+      "debug": false,
+      "exclude": [
+        "transform-async-to-generator",
+        "transform-template-literals",
+        "transform-regenerator"
+      ],
+      "modules": false,
+      "targets": {
+        "node": 6
+      }
+    }]
+  ],
+  "plugins": [
+    ["@babel/plugin-transform-modules-commonjs", {
+      "strictMode": true,
+      "strict": true
+    }],
+    ["@babel/plugin-transform-strict-mode", {
+      "strictMode": true
+    }],
+    ["@babel/plugin-transform-template-literals", {
+      "spec": true
+    }],
+    "@babel/plugin-transform-property-mutators",
+    "babel-plugin-transform-member-expression-literals",
+    "babel-plugin-transform-property-literals",
+    "babel-plugin-transform-jscript",
+    ["@babel/plugin-proposal-object-rest-spread", {
+      "useBuiltIns": true
+    }]
+  ]
+}

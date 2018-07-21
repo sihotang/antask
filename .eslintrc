@@ -1,0 +1,8 @@
+{
+  "extends": ["./eslint/index.js"],
+  "root": true,
+  "env": {
+    "node": true,
+    "mocha": true
+  }
+}

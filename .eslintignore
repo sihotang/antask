@@ -1,0 +1,7 @@
+babel/
+bin/
+eslint/
+lib/
+node_modules/
+**/node_modules/
+tslint/
