@@ -33,11 +33,10 @@ const { sync: rimraf } = require('rimraf');
 
 module.exports = function (sources, excludes = []) {
   return sources.map(source => {
-    console.log(join(source, '/*/lib'));
     if (excludes.length > 0) {
       if (difference(excludes, path.basename(source)).length > 0) return;
     }
 
-    return rimraf(join(source, '/*/lib'));
+    return rimraf(join(source, '/*/npm-debug*'));
   });
 };
