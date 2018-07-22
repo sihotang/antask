@@ -1,4 +1,3 @@
-"use strict";
 /**
  * This content is released under The MIT License
  *
@@ -22,29 +21,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @package       @sihotang/bait
+ * @package       antask
  * @author        Sopar Sihotang <soparsihotang@gmail.com>
  * @copyright     2018 Sopar Sihotang
  * @license       http://www.opensource.org/licenses/MIT
  */
 
-const gulp = require('gulp');
-const path = require('path');
-const build = require('./tasks/build');
-const clean = require('./tasks/clean');
+const { difference } = require('lodash/array');
+const { join } = require('path');
+const { sync: rimraf } = require('rimraf');
 
-const workspaces = ["packages"];
+module.exports = function (sources, excludes = []) {
+  return sources.map(source => {
+    console.log(join(source, '/*/lib'));
+    if (excludes.length > 0) {
+      if (difference(excludes, path.basename(source)).length > 0) return;
+    }
 
-const sources = () => {
-  return workspaces.map(source => {
-    return path.join(__dirname, source);
+    return rimraf(join(source, '/*/lib'));
   });
 };
-
-gulp.task('build', ['clean'], () => {
-  return build(gulp, sources());
-});
-
-gulp.task('clean', () => {
-  return clean(sources());
-});

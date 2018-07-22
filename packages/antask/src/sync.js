@@ -27,22 +27,18 @@
  * @license       http://www.opensource.org/licenses/MIT
  */
 
-import {
-  execSync,
-  spawnSync
-} from 'child_process';
+import { execSync, spawnSync } from 'child_process';
 import path from 'path';
 
 const SEPARATOR = process.platform === 'win32' ? ';' : ':';
-const envModules = { ...process.env
-};
+// const envModules = { ...process.env };
 
-envModules.PATH = path.resolve(process.cwd(), 'node_modules/.bin') + SEPARATOR + envModules.PATH;
+envModules.PATH = path.resolve(process.cwd(), 'node_modules/.bin') + SEPARATOR + process.env.PATH;
 
 const exec = function exec(command, name, cwd = process.cwd()) {
   return execSync(command, {
     cwd,
-    env: envModules,
+    env: process.env,
     stdio: 'inherit',
   });
 };
@@ -50,11 +46,9 @@ const exec = function exec(command, name, cwd = process.cwd()) {
 const spawn = function spawn(command, args = [], cwd = process.cwd()) {
   return spawnSync(command, args, {
     cwd,
-    env: envModules,
+    env: process.env,
     stdio: 'inherit',
   }).on('error', process.exit);
 };
 
-export {
-  exec as execSync, spawn as spawnSync
-};
+export { exec as execSync, spawn as spawnSync };

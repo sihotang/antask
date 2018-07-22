@@ -1,4 +1,3 @@
-"use strict";
 /**
  * This content is released under The MIT License
  *
@@ -22,29 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @package       @sihotang/bait
+ * @package       antask
  * @author        Sopar Sihotang <soparsihotang@gmail.com>
  * @copyright     2018 Sopar Sihotang
  * @license       http://www.opensource.org/licenses/MIT
  */
-
-const gulp = require('gulp');
-const path = require('path');
-const build = require('./tasks/build');
-const clean = require('./tasks/clean');
-
-const workspaces = ["packages"];
-
-const sources = () => {
-  return workspaces.map(source => {
-    return path.join(__dirname, source);
-  });
-};
-
-gulp.task('build', ['clean'], () => {
-  return build(gulp, sources());
-});
-
-gulp.task('clean', () => {
-  return clean(sources());
-});

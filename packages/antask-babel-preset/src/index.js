@@ -122,7 +122,8 @@ export default declare((api, opts) => {
       transformPropertyMutators,
       transformMemberExpressionLiterals,
       transformPropertyLiterals,
-      transformJscript, [proposalObjectRestSpread, {
+      transformJscript,
+      [proposalObjectRestSpread, {
         useBuiltIns
       }],
     ].filter(Boolean)

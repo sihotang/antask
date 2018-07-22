@@ -12,9 +12,13 @@ indent_size = 2
 max_line_length = null
 trim_trailing_whitespace = true
 
-[*.{js,json}]
+[*.{js,ts,json}]
 indent_style = space
 indent_size = 2
 
 [*.md]
 trim_trailing_whitespace = false
+
+[Makefile]
+indent_style = space
+indent_size = 4

@@ -40,12 +40,12 @@ const {
   swapSrcWithLib
 } = require('../utils');
 
-module.exports = function (gulp, packages, excludes = []) {
+module.exports = function (gulp, sources, excludes = []) {
   return merge(
-    packages.map(pkg => {
-      const base = pkg;
+    sources.map(source => {
+      const base = source;
 
-      let stream = gulp.src(getGlobFromPackage(path.basename(pkg)), {
+      let stream = gulp.src(getGlobFromPackage(path.basename(source)), {
         base: base
       });
 
