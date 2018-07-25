@@ -1,3 +1,4 @@
+"use strict";
 /**
  * This content is released under The MIT License
  *
@@ -26,3 +27,32 @@
  * @copyright     2018 Sopar Sihotang
  * @license       http://www.opensource.org/licenses/MIT
  */
+
+const babel = require('gulp-babel');
+const filter = require('gulp-filter');
+const newer = require('gulp-newer');
+const merge = require('merge-stream');
+const path = require('path');
+const anutil = require('../../utils');
+
+module.exports = function (gulp, sources, excludes = []) {
+  return merge(sources.map(source => {
+    let stream = gulp.src(anutil.getGlobFromPackage(path.basename(source)), {
+      base: source
+    });
+
+    if (excludes.length > 0) {
+      const filters = excludes.map(p => `!**/${p}/**`);
+      filters.unshift("**");
+      stream = stream.pipe(filter(filters));
+    }
+
+    return stream
+      .pipe(anutil.errorsLogger())
+      .pipe(newer({ dest: source, map: anutil.swapSrcWithLib }))
+      .pipe(anutil.compilationLogger())
+      .pipe(babel())
+      .pipe(anutil.rename(file => path.resolve(file.base, anutil.swapSrcWithLib(file.relative))))
+      .pipe(gulp.dest(source));
+  }));
+};

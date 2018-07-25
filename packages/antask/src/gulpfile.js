@@ -28,13 +28,23 @@
  */
 
 import gulp from 'gulp';
+import { map } from 'lodash/collection';
+import path from 'path';
 import build from './build';
 import clean from './clean';
 
-gulp.task('build', ['clean'], () => {
-  build([]);
+const workspaces = ["packages"];
+const sources = workspaces.map(source => {
+  return {
+    src: path.join(__dirname, source),
+    dbg: path.join(__dirname, source, "/*/npm-debug*"),
+    lib: path.join(__dirname, source, "/*/lib"),
+    tmp: path.join(__dirname, source, "/*/test/tmp"),
+  }
 });
 
-gulp.task('clean', () => {
-  clean();
-});
+gulp.task("clean:lib", () => clean(gulp, map(sources, "lib")));
+gulp.task("clean:test", () => clean(gulp, map(sources, "tmp")));
+gulp.task("clean", gulp.series("clean:test", () => clean(gulp, map(sources, "dbg"))));
+gulp.task("build", gulp.series("clean", "clean:lib", () => build.babel(gulp, map(sources, "src"))));
+gulp.task("default", gulp.series("build"));

@@ -27,12 +27,12 @@
  * @license       http://www.opensource.org/licenses/MIT
  */
 
-import chalk from 'chalk';
-import {
-  isProduction,
-  isVerbose
-} from './environment';
-import Timer from './Timer';
+import chalk from "chalk";
+import plumber from "gulp-plumber";
+import { log } from "gulp-util";
+import { obj } from "through2";
+import { isProduction, isVerbose } from "./environment";
+import Timer from "./Timer";
 
 /* eslint-disable no-console */
 class Logger {
@@ -48,17 +48,49 @@ class Logger {
 
   static endTask(name, task, startTime, errorMessage) {
     console.log(`${Timer.prefixTime(name)}\
-    ${Timer.passFail(errorMessage === undefined)}: ${chalk.cyan(task)} (${Timer.duration(startTime)}) ${errorMessage ? (chalk.white(':') + chalk.red(errorMessage)) : ''}`);
+    ${Timer.passFail(errorMessage === undefined)}: ${chalk.cyan(
+      task,
+    )} (${Timer.duration(startTime)}) ${
+      errorMessage ? chalk.white(":") + chalk.red(errorMessage) : ""
+    }`);
   }
 
   static endBuild(name, passed, startTime) {
     console.log();
-    console.log(`${
-      chalk.grey('============') + chalk.white('[ ') + chalk.cyan(name) + chalk.white(' ]')
-      + chalk.grey('=') + chalk.white('[ ') + Timer.passFail(passed) + chalk.white(' ]')
-      + chalk.grey('=') + chalk.white('[ ') + Timer.duration(startTime) + chalk.white(' ]')
-      + chalk.grey('============')
-    }`);
+    console.log(
+      `${chalk.grey("============") +
+        chalk.white("[ ") +
+        chalk.cyan(name) +
+        chalk.white(" ]") +
+        chalk.grey("=") +
+        chalk.white("[ ") +
+        Timer.passFail(passed) +
+        chalk.white(" ]") +
+        chalk.grey("=") +
+        chalk.white("[ ") +
+        Timer.duration(startTime) +
+        chalk.white(" ]") +
+        chalk.grey("============")}`,
+    );
+  }
+
+  static compilation(rollup) {
+    return obj((file, enc, callback) => {
+      log(
+        `Compiling '${chalk.cyan(file.relative)}'${
+          rollup ? " with rollup " : ""
+        }...`,
+      );
+      callback(null, file);
+    });
+  }
+
+  static error() {
+    return plumber({
+      errorHandler(err) {
+        log(err.stack);
+      },
+    });
   }
 }
 /* eslint-enable no-console */

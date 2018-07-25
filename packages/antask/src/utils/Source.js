@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * This content is released under The MIT License
  *
@@ -21,22 +22,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @package       @sihotang/bait
+ * @package       @antask/babel-preset
  * @author        Sopar Sihotang <soparsihotang@gmail.com>
  * @copyright     2018 Sopar Sihotang
  * @license       http://www.opensource.org/licenses/MIT
  */
 
-import Environment from './Environment';
-import Logger from './Logger';
-import rename from './rename';
-import Source from './Source';
-import Timer from './Timer';
+class Source {
+  static glob(source) {
+    return `./${source}/*/src/**/*.js`;
+  }
 
-export default {
-  Environment,
-  Logger,
-  rename,
-  Source,
-  Timer,
+  static index(name) {
+    return `${name}/src/index.js`;
+  }
 }
+
+export default Source;

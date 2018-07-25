@@ -27,24 +27,27 @@
  * @license       http://www.opensource.org/licenses/MIT
  */
 
-import {
-  existsSync,
-  readFileSync
-} from 'fs';
-import path from 'path';
+import { existsSync, readFileSync } from "fs";
+import path from "path";
 
-/**
- * ENVIRONMENTS
- */
-export const isProduction = process.argv.indexOf('--production') > -1;
-export const isVerbose = process.argv.indexOf('--verbose') > -1;
-
-export function packaged() {
-  const filepath = path.resolve(process.cwd(), 'package.json');
-
-  if (existsSync(filepath)) {
-    return JSON.parse(readFileSync(filepath, 'utf8'));
+class Environment {
+  static get isProduction() {
+    return process.argv.indexOf("--production") > -1;
   }
 
-  return undefined;
+  static get isVerbose() {
+    return process.argv.indexOf("--verbose") > -1;
+  }
+
+  static packaged() {
+    const filepath = path.resolve(process.cwd(), "package.json");
+
+    if (existsSync(filepath)) {
+      return JSON.parse(readFileSync(filepath, "utf8"));
+    }
+
+    return undefined;
+  }
 }
+
+export default Environment;

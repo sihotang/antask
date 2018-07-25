@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * This content is released under The MIT License
  *
@@ -21,22 +22,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @package       @sihotang/bait
+ * @package       @antask/babel-preset
  * @author        Sopar Sihotang <soparsihotang@gmail.com>
  * @copyright     2018 Sopar Sihotang
  * @license       http://www.opensource.org/licenses/MIT
  */
 
-import Environment from './Environment';
-import Logger from './Logger';
-import rename from './rename';
-import Source from './Source';
-import Timer from './Timer';
+export default function(gulp, name, exportName, pathname, version, plugins) {
+  return merge(
+    packages.map(pkg => {
+      const base = path.join(__dirname, pkg);
 
-export default {
-  Environment,
-  Logger,
-  rename,
-  Source,
-  Timer,
-}
+      let stream = gulp.src(getGlobFromPackage(pkg), {
+        base: base,
+      });
+
+      if (excludes.length > 0) {
+        const filters = excludes.map(p => `!**/${p}/**`);
+        filters.unshift("**");
+        stream = stream.pipe(filter(filters));
+      }
+
+      return stream
+        .pipe(errorsLogger())
+        .pipe(
+          newer({
+            dest: base,
+            map: swapSrcWithLib,
+          }),
+        )
+        .pipe(compilationLogger())
+        .pipe(babel())
+        .pipe(
+          rename(file =>
+            path.resolve(file.base, swapSrcWithLib(file.relative)),
+          ),
+        )
+        .pipe(gulp.dest(base));
+    }),
+  );
+};

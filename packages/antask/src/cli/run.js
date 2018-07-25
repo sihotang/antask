@@ -27,28 +27,29 @@
  * @license       http://www.opensource.org/licenses/MIT
  */
 
-require('colorful').colorful();
+import { colorful } from 'colorful';
+import { args, help, on, parse } from 'commander';
+import { start } from 'gulp';
 
-const gulp = require('gulp');
-const program = require('commander');
+colorful();
 
 /* eslint-disable no-console */
-program.on('--help', () => {
+on('--help', () => {
   console.log('  Usage:'.to.bold.blue.color);
   console.log();
 });
 
-program.parse(process.argv);
+parse(process.argv);
 
-const task = program.args[0];
+const task = args[0];
 
 if (!task) {
-  program.help();
+  help();
 } else {
   console.log('antask run', task);
 
   require('../gulpfile');
 
-  gulp.start(task);
+  start(task);
 }
 /* eslint-enable no-console */

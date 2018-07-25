@@ -28,37 +28,7 @@
  * @license       http://www.opensource.org/licenses/MIT
  */
 
-const babel = require('gulp-babel');
-const filter = require('gulp-filter');
-const newer = require('gulp-newer');
-const merge = require('merge-stream');
-const path = require('path');
-const {
-  compilationLogger,
-  errorsLogger,
-  getGlobFromPackage,
-  rename,
-  swapSrcWithLib
-} = require('../utils');
-
-module.exports = function (gulp, sources, excludes = []) {
-  return merge(sources.map(source => {
-    let stream = gulp.src(getGlobFromPackage(path.basename(source)), {
-      base: source
-    });
-
-    if (excludes.length > 0) {
-      const filters = excludes.map(p => `!**/${p}/**`);
-      filters.unshift("**");
-      stream = stream.pipe(filter(filters));
-    }
-
-    return stream
-      .pipe(errorsLogger())
-      .pipe(newer({ dest: source, map: swapSrcWithLib }))
-      .pipe(compilationLogger())
-      .pipe(babel())
-      .pipe(rename(file => path.resolve(file.base, swapSrcWithLib(file.relative))))
-      .pipe(gulp.dest(source));
-  }));
-};
+module.exports = {
+  babel: require('./build/babel'),
+  babelStandalone: require('./build/babel-standalone'),
+}

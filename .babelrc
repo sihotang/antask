@@ -1,5 +1,4 @@
 {
-  "comments": false,
   "presets": [
     ["@babel/preset-env", {
       "exclude": [
@@ -31,5 +30,6 @@
     ["@babel/plugin-proposal-object-rest-spread", {
       "useBuiltIns": true
     }]
-  ]
+  ],
+  "comments": false
 }

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * This content is released under The MIT License
  *
@@ -21,22 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @package       @sihotang/bait
+ * @package       @antask/babel-preset
  * @author        Sopar Sihotang <soparsihotang@gmail.com>
  * @copyright     2018 Sopar Sihotang
  * @license       http://www.opensource.org/licenses/MIT
  */
 
-import Environment from './Environment';
-import Logger from './Logger';
-import rename from './rename';
-import Source from './Source';
-import Timer from './Timer';
+import clean from "gulp-clean";
+import { difference } from "lodash/array";
+import merge from "merge-stream";
+import { basename } from "path";
 
-export default {
-  Environment,
-  Logger,
-  rename,
-  Source,
-  Timer,
-}
+export default function(gulp, sources, excludes = []) {
+  return merge(
+    sources.map(source => {
+      let stream = gulp.src(source, { base: source });
+
+      if (excludes.length > 0) {
+        if (difference(excludes, basename(source)).length > 0) return;
+      }
+
+      return stream.pipe(clean());
+    }),
+  );
+};

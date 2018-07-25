@@ -57,7 +57,7 @@ export default declare((api, opts) => {
   let debug = false;
   let modules = false;
   let spec = true;
-  let strict = true;
+  let strict = false;
   let strictMode = true;
   let useBuiltIns = true;
 

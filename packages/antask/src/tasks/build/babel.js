@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * This content is released under The MIT License
  *
@@ -21,22 +22,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @package       @sihotang/bait
+ * @package       @antask/babel-preset
  * @author        Sopar Sihotang <soparsihotang@gmail.com>
  * @copyright     2018 Sopar Sihotang
  * @license       http://www.opensource.org/licenses/MIT
  */
 
-import Environment from './Environment';
-import Logger from './Logger';
-import rename from './rename';
-import Source from './Source';
-import Timer from './Timer';
+import babel from 'gulp-babel';
+import filter from 'gulp-filter';
+import newer from 'gulp-newer';
+import merge from 'merge-stream';
+import { basename, resolve } from 'path';
+import { compilationLogger, errorsLogger, getGlobFromPackage, rename, swapSrcWithLib } from '../../utils';
 
-export default {
-  Environment,
-  Logger,
-  rename,
-  Source,
-  Timer,
-}
+export default function (gulp, sources, excludes = []) {
+  return merge(sources.map(source => {
+    let stream = gulp.src(getGlobFromPackage(basename(source)), {
+      base: source
+    });
+
+    if (excludes.length > 0) {
+      const filters = excludes.map(p => `!**/${p}/**`);
+      filters.unshift('**');
+      stream = stream.pipe(filter(filters));
+    }
+
+    return stream
+      .pipe(errorsLogger())
+      .pipe(newer({ dest: source, map: swapSrcWithLib }))
+      .pipe(compilationLogger())
+      .pipe(babel())
+      .pipe(rename(file => resolve(file.base, swapSrcWithLib(file.relative))))
+      .pipe(gulp.dest(source));
+  }));
+};

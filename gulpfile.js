@@ -55,6 +55,6 @@ gulp.task("clean", gulp.series("clean:test", function () {
   return clean(gulp, map(sources, "dbg"))
 }));
 gulp.task("build", gulp.series("clean", "clean:lib", function () {
-  return build(gulp, map(sources, "src"));
+  return build.babel(gulp, map(sources, "src"));
 }));
 gulp.task("default", gulp.series("build"));

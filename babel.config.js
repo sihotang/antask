@@ -7,7 +7,8 @@ module.exports = function (api) {
     exclude: [
       "transform-async-to-generator",
       "transform-template-literals",
-      "transform-regenerator"
+      "transform-typeof-symbol",
+      "transform-regenerator",
     ],
     modules: false,
     targets: {
@@ -30,7 +31,6 @@ module.exports = function (api) {
   }
 
   return {
-    comments: false,
     ignore: [
       "packages/*/lib",
     ],
@@ -38,10 +38,10 @@ module.exports = function (api) {
       ["@babel/preset-env", envOpts],
     ],
     plugins: [
+      "@babel/plugin-transform-flow-strip-types",
       ["@babel/plugin-transform-modules-commonjs", {
-        lazy: true,
         strictMode: true,
-        strict: true,
+        strict: false,
       }],
       ["@babel/plugin-transform-strict-mode", {
         strictMode: true
@@ -53,9 +53,16 @@ module.exports = function (api) {
       "babel-plugin-transform-member-expression-literals",
       "babel-plugin-transform-property-literals",
       "babel-plugin-transform-jscript",
+      ["@babel/plugin-proposal-class-properties", {
+        loose: true,
+      }],
+      "@babel/plugin-proposal-export-namespace-from",
+      "@babel/plugin-proposal-numeric-separator",
       ["@babel/plugin-proposal-object-rest-spread", {
         useBuiltIns: true,
+        loose: true,
       }],
     ].filter(Boolean),
+    comments: false,
   };
 };
