@@ -38,9 +38,9 @@ class Source {
     return `${name}/src/index.js`;
   }
 
-  static swap(source, compiled = "lib") {
+  static swap(source, dest = "lib") {
     const parts = source.split(path.sep);
-    parts[1] = compiled;
+    parts[1] = dest;
     return parts.join(sep);
   }
 }
