@@ -39,23 +39,20 @@ module.exports = function (api) {
     ],
     plugins: [
       "@babel/plugin-transform-flow-strip-types",
+      ["@babel/plugin-transform-arrow-functions", { spec: true }],
+      ["@babel/plugin-transform-classes", { loose: true }],
       ["@babel/plugin-transform-modules-commonjs", {
+        lazy: true,
         strictMode: true,
         strict: false,
       }],
-      ["@babel/plugin-transform-strict-mode", {
-        strictMode: true
-      }],
-      ["@babel/plugin-transform-template-literals", {
-        spec: true,
-      }],
+      ["@babel/plugin-transform-strict-mode", { strictMode: true }],
+      ["@babel/plugin-transform-template-literals", { spec: true }],
       "@babel/plugin-transform-property-mutators",
       "babel-plugin-transform-member-expression-literals",
       "babel-plugin-transform-property-literals",
       "babel-plugin-transform-jscript",
-      ["@babel/plugin-proposal-class-properties", {
-        loose: true,
-      }],
+      ["@babel/plugin-proposal-class-properties", { loose: true }],
       "@babel/plugin-proposal-export-namespace-from",
       "@babel/plugin-proposal-numeric-separator",
       ["@babel/plugin-proposal-object-rest-spread", {

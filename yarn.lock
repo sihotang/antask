@@ -308,7 +308,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "7.0.0-beta.54"
 
-"@babel/plugin-transform-arrow-functions@7.0.0-beta.54":
+"@babel/plugin-transform-arrow-functions@7.0.0-beta.54", "@babel/plugin-transform-arrow-functions@^7.0.0-beta.54":
   version "7.0.0-beta.54"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-arrow-functions/-/plugin-transform-arrow-functions-7.0.0-beta.54.tgz#44a977b8e61e4efcc7658bbbe260f204ca1bcf72"
   dependencies:
@@ -335,7 +335,7 @@
     "@babel/helper-plugin-utils" "7.0.0-beta.54"
     lodash "^4.17.5"
 
-"@babel/plugin-transform-classes@7.0.0-beta.54":
+"@babel/plugin-transform-classes@7.0.0-beta.54", "@babel/plugin-transform-classes@^7.0.0-beta.54":
   version "7.0.0-beta.54"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-classes/-/plugin-transform-classes-7.0.0-beta.54.tgz#b15781d2e499ce25438e73fea2fa5a09858568ff"
   dependencies:
