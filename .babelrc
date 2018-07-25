@@ -1,12 +1,10 @@
 {
-  "comment": false,
+  "comments": false,
   "presets": [
     ["@babel/preset-env", {
-      "debug": false,
       "exclude": [
         "transform-async-to-generator",
         "transform-template-literals",
-        "transform-typeof-symbol",
         "transform-regenerator"
       ],
       "modules": false,
@@ -27,7 +25,6 @@
       "spec": true
     }],
     "@babel/plugin-transform-property-mutators",
-    "@babel/proposal-numeric-separator",
     "babel-plugin-transform-member-expression-literals",
     "babel-plugin-transform-property-literals",
     "babel-plugin-transform-jscript",

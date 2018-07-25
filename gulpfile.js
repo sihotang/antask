@@ -28,23 +28,33 @@
  * @license       http://www.opensource.org/licenses/MIT
  */
 
-const gulp = require('gulp');
-const path = require('path');
-const build = require('./tasks/build');
-const clean = require('./tasks/clean');
+var gulp = require("gulp");
+var path = require("path");
+var { map } = require("lodash/collection");
+var build = require("./tasks/build");
+var clean = require("./tasks/clean");
 
-const workspaces = ["packages"];
+var workspaces = ["packages"];
 
-const sources = () => {
-  return workspaces.map(source => {
-    return path.join(__dirname, source);
-  });
-};
-
-gulp.task('build', ['clean'], () => {
-  return build(gulp, sources());
+var sources = workspaces.map(source => {
+  return {
+    src: path.join(__dirname, source),
+    dbg: path.join(__dirname, source, "/*/npm-debug*"),
+    lib: path.join(__dirname, source, "/*/lib"),
+    tmp: path.join(__dirname, source, "/*/test/tmp")
+  }
 });
 
-gulp.task('clean', () => {
-  return clean(sources());
+gulp.task("clean:lib", function () {
+  return clean(gulp, map(sources, "lib"))
 });
+gulp.task("clean:test", function () {
+  return clean(gulp, map(sources, "tmp"))
+});
+gulp.task("clean", gulp.series("clean:test", function () {
+  return clean(gulp, map(sources, "dbg"))
+}));
+gulp.task("build", gulp.series("clean", "clean:lib", function () {
+  return build(gulp, map(sources, "src"));
+}));
+gulp.task("default", gulp.series("build"));

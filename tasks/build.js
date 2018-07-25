@@ -29,6 +29,7 @@
  */
 
 const babel = require('gulp-babel');
+const filter = require('gulp-filter');
 const newer = require('gulp-newer');
 const merge = require('merge-stream');
 const path = require('path');
@@ -41,29 +42,23 @@ const {
 } = require('../utils');
 
 module.exports = function (gulp, sources, excludes = []) {
-  return merge(
-    sources.map(source => {
-      const base = source;
+  return merge(sources.map(source => {
+    let stream = gulp.src(getGlobFromPackage(path.basename(source)), {
+      base: source
+    });
 
-      let stream = gulp.src(getGlobFromPackage(path.basename(source)), {
-        base: base
-      });
+    if (excludes.length > 0) {
+      const filters = excludes.map(p => `!**/${p}/**`);
+      filters.unshift("**");
+      stream = stream.pipe(filter(filters));
+    }
 
-      if (excludes.length > 0) {
-        const filters = excludes.map(p => `!**/${p}/**`);
-        filters.unshift("**");
-        stream = stream.pipe(filter(filters));
-      }
-
-      return stream
-        .pipe(errorsLogger())
-        .pipe(newer({
-          dest: base,
-          map: swapSrcWithLib
-        }))
-        .pipe(compilationLogger())
-        .pipe(babel())
-        .pipe(rename(file => path.resolve(file.base, swapSrcWithLib(file.relative))))
-        .pipe(gulp.dest(base));
-    }));
+    return stream
+      .pipe(errorsLogger())
+      .pipe(newer({ dest: source, map: swapSrcWithLib }))
+      .pipe(compilationLogger())
+      .pipe(babel())
+      .pipe(rename(file => path.resolve(file.base, swapSrcWithLib(file.relative))))
+      .pipe(gulp.dest(source));
+  }));
 };

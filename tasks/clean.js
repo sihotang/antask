@@ -28,15 +28,18 @@
  */
 
 const { difference } = require('lodash/array');
-const { join } = require('path');
-const { sync: rimraf } = require('rimraf');
+const clean = require("gulp-clean");
+const merge = require("merge-stream");
+const path = require("path");
 
-module.exports = function (sources, excludes = []) {
-  return sources.map(source => {
+module.exports = function (gulp, sources, excludes = []) {
+  return merge(sources.map(source => {
+    let stream = gulp.src(source, { base: source });
+
     if (excludes.length > 0) {
       if (difference(excludes, path.basename(source)).length > 0) return;
     }
 
-    return rimraf(join(source, '/*/npm-debug*'));
-  });
+    return stream.pipe(clean());
+  }));
 };

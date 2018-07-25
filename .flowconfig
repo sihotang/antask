@@ -1,5 +1,6 @@
 [ignore]
 .*/build/.*
+.*/lib/.*
 .*/packages/.*/lib
 .*/packages/.*/test
 .*/node_modules/conventional-changelog-core/
