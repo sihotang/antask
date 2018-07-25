@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * This content is released under The MIT License
  *

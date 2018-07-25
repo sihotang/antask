@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * This content is released under The MIT License
  *
@@ -28,6 +27,8 @@
  * @license       http://www.opensource.org/licenses/MIT
  */
 
+import { sep } from 'path';
+
 class Source {
   static glob(source) {
     return `./${source}/*/src/**/*.js`;
@@ -35,6 +36,12 @@ class Source {
 
   static index(name) {
     return `${name}/src/index.js`;
+  }
+
+  static swap(source, compiled = "lib") {
+    const parts = source.split(path.sep);
+    parts[1] = compiled;
+    return parts.join(sep);
   }
 }
 

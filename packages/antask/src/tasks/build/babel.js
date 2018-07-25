@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * This content is released under The MIT License
  *
@@ -33,11 +32,11 @@ import filter from 'gulp-filter';
 import newer from 'gulp-newer';
 import merge from 'merge-stream';
 import { basename, resolve } from 'path';
-import { compilationLogger, errorsLogger, getGlobFromPackage, rename, swapSrcWithLib } from '../../utils';
+import { Logger, rename, Source } from '../../utils';
 
 export default function (gulp, sources, excludes = []) {
   return merge(sources.map(source => {
-    let stream = gulp.src(getGlobFromPackage(basename(source)), {
+    let stream = gulp.src(Source.glob(basename(source)), {
       base: source
     });
 
@@ -48,11 +47,11 @@ export default function (gulp, sources, excludes = []) {
     }
 
     return stream
-      .pipe(errorsLogger())
-      .pipe(newer({ dest: source, map: swapSrcWithLib }))
-      .pipe(compilationLogger())
+      .pipe(Logger.error())
+      .pipe(newer({ dest: source, map: Source.swap }))
+      .pipe(Logger.compilation())
       .pipe(babel())
-      .pipe(rename(file => resolve(file.base, swapSrcWithLib(file.relative))))
+      .pipe(rename(file => resolve(file.base, Source.swap(file.relative))))
       .pipe(gulp.dest(source));
   }));
 };
