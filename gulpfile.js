@@ -57,4 +57,8 @@ gulp.task("clean", gulp.series("clean:test", function () {
 gulp.task("build", gulp.series("clean", "clean:lib", function () {
   return build.babel(gulp, map(sources, "src"));
 }));
+/**
+ * Aliases
+ */
+gulp.task("tsc", gulp.series("build:types"));
 gulp.task("default", gulp.series("build"));
