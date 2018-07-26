@@ -30,13 +30,12 @@
 import { colorful } from 'colorful';
 import { args, help, on, parse } from 'commander';
 import { start } from 'gulp';
+import { Logger } from "../utils";
 
 colorful();
 
-/* eslint-disable no-console */
 on('--help', () => {
-  console.log('  Usage:'.to.bold.blue.color);
-  console.log();
+  Logger.stats("  Usage:".to.bold.blue.color);
 });
 
 parse(process.argv);
@@ -46,10 +45,9 @@ const task = args[0];
 if (!task) {
   help();
 } else {
-  console.log('antask run', task);
+  Logger.stats("task run", task);
 
   require('../gulpfile');
 
   start(task);
 }
-/* eslint-enable no-console */

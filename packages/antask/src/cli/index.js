@@ -27,18 +27,18 @@
  * @license       http://www.opensource.org/licenses/MIT
  */
 
-require('colorful').colorful();
+import { colorful } from "colorful";
+import { version as _version, runningCommand, help } from 'commander';
+import { version } from '../../package.json';
 
-const program = require('commander');
-const packageInfo = require('../../package.json');
+colorful();
 
-program
-  .version(packageInfo.version)
-  .command('run [name]', 'run specified task')
+_version(version)
+  .command("run [name]", "run specified task")
   .parse(process.argv);
 
 // https://github.com/tj/commander.js/pull/260
-const proc = program.runningCommand;
+const proc = runningCommand;
 if (proc) {
   proc.on('close', process.exit.bind(process));
   proc.on('error', () => {
@@ -46,7 +46,7 @@ if (proc) {
   });
 }
 
-const subCmd = program.args[0];
-if (!subCmd || subCmd !== 'run') {
-  program.help();
+const command = args[0];
+if (!command || command !== "run") {
+  help();
 }

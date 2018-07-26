@@ -30,8 +30,8 @@
 import gulp from 'gulp';
 import { map } from 'lodash/collection';
 import path from 'path';
-import build from './build';
-import clean from './clean';
+import build from '../tasks/build';
+import clean from '../tasks/clean';
 
 const workspaces = ["packages"];
 const sources = workspaces.map(source => {
@@ -43,8 +43,23 @@ const sources = workspaces.map(source => {
   }
 });
 
+const tssources = [
+  '**/*.ts',
+  '**/*.tsx',
+  '!node_modules/**/*.*',
+  'typings/**/*.d.ts',
+];
+
 gulp.task("clean:lib", () => clean(gulp, map(sources, "lib")));
 gulp.task("clean:test", () => clean(gulp, map(sources, "tmp")));
 gulp.task("clean", gulp.series("clean:test", () => clean(gulp, map(sources, "dbg"))));
 gulp.task("build", gulp.series("clean", "clean:lib", () => build.babel(gulp, map(sources, "src"))));
+gulp.task("build:types", () => build.types(gulp.src(tssources, {
+    base: cwd()
+})));
+
+/**
+ * Section Aliases
+ */
 gulp.task("default", gulp.series("build"));
+gulp.task("tsc", gulp.series("build"));
