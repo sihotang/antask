@@ -28,9 +28,9 @@
  */
 
 import clean from "gulp-clean";
-import { difference } from "lodash/array";
+import _ from "lodash/array";
 import merge from "merge-stream";
-import { basename } from "path";
+import path from "path";
 
 export default function(gulp, sources, excludes = []) {
   return merge(
@@ -38,7 +38,7 @@ export default function(gulp, sources, excludes = []) {
       let stream = gulp.src(source, { base: source });
 
       if (excludes.length > 0) {
-        if (difference(excludes, basename(source)).length > 0) return;
+        if (_.difference(excludes, path.basename(source)).length > 0) return;
       }
 
       return stream.pipe(clean());

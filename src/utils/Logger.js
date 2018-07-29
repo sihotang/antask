@@ -31,11 +31,11 @@ import chalk from "chalk";
 import plumber from "gulp-plumber";
 import { log } from "gulp-util";
 import { obj } from "through2";
-import { isProduction, isVerbose } from "./environment";
+import { isProduction, isVerbose } from "./Environment";
 import Timer from "./Timer";
 
 /* eslint-disable no-console */
-class Logger {
+export default class Logger {
   static stats(args) {
     if (isProduction || isVerbose) {
       console.log(chalk.gray(args));
@@ -94,5 +94,3 @@ class Logger {
   }
 }
 /* eslint-enable no-console */
-
-export default Logger;

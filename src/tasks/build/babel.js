@@ -34,7 +34,7 @@ import merge from 'merge-stream';
 import { basename, resolve } from 'path';
 import { Logger, rename, Source } from '../../utils';
 
-export default function (gulp, sources, excludes = []) {
+export default function (stream, excludes = []) {
   return merge(sources.map(source => {
     let stream = gulp.src(Source.glob(basename(source)), {
       base: source

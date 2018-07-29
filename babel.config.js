@@ -31,9 +31,9 @@ module.exports = function (api) {
   }
 
   return {
-    ignore: [
-      "packages/*/lib",
-    ],
+    // ignore: [
+    //   "packages/*/lib",
+    // ],
     presets: [
       ["@babel/preset-env", envOpts],
     ],
@@ -41,11 +41,11 @@ module.exports = function (api) {
       "@babel/plugin-transform-flow-strip-types",
       ["@babel/plugin-transform-arrow-functions", { spec: true }],
       ["@babel/plugin-transform-classes", { loose: true }],
-      ["@babel/plugin-transform-modules-commonjs", {
-        lazy: true,
-        strictMode: true,
-        strict: false,
-      }],
+      // ["@babel/plugin-transform-modules-commonjs", {
+      //   lazy: true,
+      //   strictMode: true,
+      //   strict: false,
+      // }],
       ["@babel/plugin-transform-strict-mode", { strictMode: true }],
       ["@babel/plugin-transform-template-literals", { spec: true }],
       "@babel/plugin-transform-property-mutators",
@@ -60,6 +60,15 @@ module.exports = function (api) {
         loose: true,
       }],
     ].filter(Boolean),
+    overrides: [
+      {
+        test: "src",
+        plugins: [
+          "babel-plugin-transform-charcodes",
+          ["@babel/plugin-transform-for-of", { assumeArray: true }],
+        ],
+      },
+    ],
     comments: false,
   };
 };

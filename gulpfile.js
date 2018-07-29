@@ -28,37 +28,138 @@
  * @license       http://www.opensource.org/licenses/MIT
  */
 
-var gulp = require("gulp");
-var path = require("path");
-var { map } = require("lodash/collection");
-var build = require("./tasks/build");
-var clean = require("./tasks/clean");
+const chalk = require("chalk");
+const glob = require("glob");
+const gulp = require("gulp");
+const babel = require("gulp-babel");
+const gclean = require("gulp-clean");
+const newer = require("gulp-newer");
+const plumber = require("gulp-plumber");
+const gutil = require("gulp-util");
+const { map } = require("lodash/collection");
+const merge = require("merge-stream");
+const path = require("path");
+const through = require("through2");
 
-var workspaces = ["packages"];
-
-var sources = workspaces.map(source => {
+const workspaces = ["./"];
+const workspace = workspaces.map(source => {
   return {
-    src: path.join(__dirname, source),
-    dbg: path.join(__dirname, source, "/*/npm-debug*"),
-    lib: path.join(__dirname, source, "/*/lib"),
-    tmp: path.join(__dirname, source, "/*/test/tmp")
-  }
+    base: path.join(__dirname, source),
+    debug: path.join(__dirname, source, "npm-debug*"),
+    lib: path.join(__dirname, source, "lib"),
+    src: path.join(__dirname, source, "src"),
+    temp: path.join(__dirname, source, "test/tmp"),
+  };
 });
 
-gulp.task("clean:lib", function () {
-  return clean(gulp, map(sources, "lib"))
+const buffer = {
+  log: {
+    error: function() {
+      return plumber({
+        errorHandler(err) {
+          gutil.log(err.stack);
+        },
+      });
+    },
+
+    compilation: function() {
+      return through.obj((file, enc, callback) => {
+        gutil.log(`Compiling '${chalk.cyan(file.relative)}'...`);
+        callback(null, file);
+      });
+    },
+  },
+
+  rename: function(fn) {
+    return through.obj(function(file, enc, callback) {
+      file.path = fn(file);
+      callback(null, file);
+    });
+  },
+};
+
+const logger = {
+  error: function (args) {
+    console.log(chalk.gray(args));
+  }
+}
+
+const source = {
+  glob: function(dir) {
+    let pattern = path.basename(dir) !== "src" ? `./${dir}/*/src/**/*.js` : "./src/**/*.js";
+
+    return glob(pattern, function(err, files) {
+      if (err) {
+        logger.error(err);
+        return;
+      } else {
+        return files;
+      }
+    }).pattern;
+  },
+
+  index: function(dir) {
+    return `/${path.basename(dir)}/src/index.js`;
+  },
+
+  swap: function(dir, dest = "lib") {
+    const parts = dir.split(path.sep);
+    parts[0] = `${dest}`;
+    // parts[1] = `${dest}`;
+
+    return parts.join(path.sep);
+  },
+};
+
+const build = function(ws) {
+  return merge(
+    ws.map(w => {
+      console.log("glob: ");
+      console.log(source.glob(w.src));
+      return gulp
+        .src(source.glob(w.src), { base: w.base })
+        .pipe(buffer.log.error())
+        .pipe(newer({ dest: w.base, map: source.swap }))
+        .pipe(buffer.log.compilation())
+        .pipe(babel())
+        .pipe(buffer.rename(file =>
+            path.resolve(file.base, source.swap(file.relative))
+          ))
+        .pipe(gulp.dest(w.base));
+    })
+  );
+};
+
+const clean = function(ws) {
+  return merge(
+    ws.map(w => {
+      return gulp
+        .src(w, { base: w, read: false, allowEmpty: true })
+        .pipe(gclean());
+    })
+  );
+};
+
+gulp.task("clean:lib", function() {
+  return clean(map(workspace, "lib"));
 });
-gulp.task("clean:test", function () {
-  return clean(gulp, map(sources, "tmp"))
+
+gulp.task("clean:test", function() {
+  return clean(map(workspace, "temp"));
 });
-gulp.task("clean", gulp.series("clean:test", function () {
-  return clean(gulp, map(sources, "dbg"))
-}));
-gulp.task("build", gulp.series("clean", "clean:lib", function () {
-  return build.babel(gulp, map(sources, "src"));
-}));
-/**
- * Aliases
- */
-gulp.task("tsc", gulp.series("build:types"));
+
+gulp.task(
+  "clean",
+  gulp.series("clean:test", function() {
+    return clean(map(workspace, "debug"));
+  })
+);
+
+gulp.task(
+  "build",
+  gulp.series("clean", "clean:lib", function() {
+    return build(workspace);
+  })
+);
+
 gulp.task("default", gulp.series("build"));

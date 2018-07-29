@@ -30,8 +30,8 @@
 import gulp from 'gulp';
 import { map } from 'lodash/collection';
 import path from 'path';
-import build from '../tasks/build';
-import clean from '../tasks/clean';
+import build from './tasks/build';
+import clean from './tasks/clean';
 
 const workspaces = ["packages"];
 const sources = workspaces.map(source => {

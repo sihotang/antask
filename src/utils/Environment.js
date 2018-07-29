@@ -30,7 +30,7 @@
 import { existsSync, readFileSync } from "fs";
 import path from "path";
 
-class Environment {
+export default class Environment {
   static get isProduction() {
     return process.argv.indexOf("--production") > -1;
   }
@@ -49,5 +49,3 @@ class Environment {
     return undefined;
   }
 }
-
-export default Environment;

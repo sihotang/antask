@@ -21,16 +21,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @package       @antask/babel-preset
+ * @package       antask
  * @author        Sopar Sihotang <soparsihotang@gmail.com>
  * @copyright     2018 Sopar Sihotang
  * @license       http://www.opensource.org/licenses/MIT
  */
 
-import babel from "./build/babel";
-import babelStandalone from "./build/babel-standalone";
+import babel from "./babel";
+import babelStandalone from "./babel-standalone";
 
 export default {
   babel: babel,
-  babelStandalone: babelStandalone
-}
+  babelStandalone: babelStandalone,
+};

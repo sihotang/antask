@@ -1,9 +1,14 @@
 {
+  "comments": false,
+  "ignore": [
+    "packages/*/lib"
+  ],
   "presets": [
     ["@babel/preset-env", {
       "exclude": [
         "transform-async-to-generator",
         "transform-template-literals",
+        "transform-typeof-symbol",
         "transform-regenerator"
       ],
       "modules": false,
@@ -13,9 +18,17 @@
     }]
   ],
   "plugins": [
+    "@babel/plugin-transform-flow-strip-types",
+    ["@babel/plugin-transform-arrow-functions", {
+      "spec": true
+    }],
+    ["@babel/plugin-transform-classes", {
+      "loose": true
+    }],
     ["@babel/plugin-transform-modules-commonjs", {
+      "lazy": true,
       "strictMode": true,
-      "strict": true
+      "strict": false
     }],
     ["@babel/plugin-transform-strict-mode", {
       "strictMode": true
@@ -27,9 +40,23 @@
     "babel-plugin-transform-member-expression-literals",
     "babel-plugin-transform-property-literals",
     "babel-plugin-transform-jscript",
+    ["@babel/plugin-proposal-class-properties", {
+      "loose": true
+    }],
+    "@babel/plugin-proposal-export-namespace-from",
+    "@babel/plugin-proposal-numeric-separator",
     ["@babel/plugin-proposal-object-rest-spread", {
-      "useBuiltIns": true
+      "useBuiltIns": true,
+      "loose": true
     }]
   ],
-  "comments": false
+  "overrides": [{
+    "test": "src",
+    "plugins": [
+      "babel-plugin-transform-charcodes",
+      ["@babel/plugin-transform-for-of", {
+        "assumeArray": true
+      }]
+    ]
+  }]
 }
