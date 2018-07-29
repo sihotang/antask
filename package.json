@@ -1,5 +1,5 @@
 {
-  "name": "antask",
+  "name": "@antask/cli",
   "version": "0.0.1",
   "description": "Task manager",
   "scripts": {

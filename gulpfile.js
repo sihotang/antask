@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @package       @sihotang/bait
+ * @package       antask
  * @author        Sopar Sihotang <soparsihotang@gmail.com>
  * @copyright     2018 Sopar Sihotang
  * @license       http://www.opensource.org/licenses/MIT
@@ -79,14 +79,15 @@ const buffer = {
 };
 
 const logger = {
-  error: function (args) {
+  error: function(args) {
     console.log(chalk.gray(args));
-  }
-}
+  },
+};
 
 const source = {
   glob: function(dir) {
-    let pattern = path.basename(dir) !== "src" ? `./${dir}/*/src/**/*.js` : "./src/**/*.js";
+    let pattern =
+      path.basename(dir) !== "src" ? `./${dir}/*/src/**/*.js` : "./src/**/*.js";
 
     return glob(pattern, function(err, files) {
       if (err) {
@@ -122,9 +123,11 @@ const build = function(ws) {
         .pipe(newer({ dest: w.base, map: source.swap }))
         .pipe(buffer.log.compilation())
         .pipe(babel())
-        .pipe(buffer.rename(file =>
+        .pipe(
+          buffer.rename(file =>
             path.resolve(file.base, source.swap(file.relative))
-          ))
+          )
+        )
         .pipe(gulp.dest(w.base));
     })
   );
