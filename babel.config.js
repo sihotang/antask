@@ -41,11 +41,11 @@ module.exports = function (api) {
       "@babel/plugin-transform-flow-strip-types",
       ["@babel/plugin-transform-arrow-functions", { spec: true }],
       ["@babel/plugin-transform-classes", { loose: true }],
-      // ["@babel/plugin-transform-modules-commonjs", {
-      //   lazy: true,
-      //   strictMode: true,
-      //   strict: false,
-      // }],
+      ["@babel/plugin-transform-modules-commonjs", {
+        lazy: true,
+        strictMode: true,
+        strict: false,
+      }],
       ["@babel/plugin-transform-strict-mode", { strictMode: true }],
       ["@babel/plugin-transform-template-literals", { spec: true }],
       "@babel/plugin-transform-property-mutators",
