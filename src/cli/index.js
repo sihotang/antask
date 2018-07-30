@@ -21,32 +21,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @package       cli
+ * @package       @antask/cli
  * @author        Sopar Sihotang <soparsihotang@gmail.com>
  * @copyright     2018 Sopar Sihotang
  * @license       http://www.opensource.org/licenses/MIT
  */
 
 import { colorful } from "colorful";
-import { version as _version, runningCommand, help } from 'commander';
-import { version } from '../../package.json';
+import program, { help, runningCommand } from "commander";
+import { version } from "../../package.json";
 
 colorful();
 
-_version(version)
+program
+  .version(version)
   .command("run [name]", "run specified task")
   .parse(process.argv);
 
 // https://github.com/tj/commander.js/pull/260
 const proc = runningCommand;
 if (proc) {
-  proc.on('close', process.exit.bind(process));
-  proc.on('error', () => {
+  proc.on("close", process.exit.bind(process));
+  proc.on("error", () => {
     process.exit(1);
   });
 }
 
-const command = args[0];
+const command = program.args[0];
 if (!command || command !== "run") {
   help();
 }

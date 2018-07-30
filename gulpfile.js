@@ -29,6 +29,7 @@
  */
 
 const chalk = require("chalk");
+const { execSync, spawnSync } = require("child_process");
 const glob = require("glob");
 const gulp = require("gulp");
 const babel = require("gulp-babel");
@@ -36,7 +37,7 @@ const gclean = require("gulp-clean");
 const newer = require("gulp-newer");
 const plumber = require("gulp-plumber");
 const gutil = require("gulp-util");
-const { map } = require("lodash/collection");
+const { compact, map, trimEnd } = require("lodash");
 const merge = require("merge-stream");
 const path = require("path");
 const through = require("through2");
@@ -112,25 +113,66 @@ const source = {
   },
 };
 
-const build = function(ws) {
-  return merge(
-    ws.map(w => {
-      console.log("glob: ");
-      console.log(source.glob(w.src));
-      return gulp
-        .src(source.glob(w.src), { base: w.base })
-        .pipe(buffer.log.error())
-        .pipe(newer({ dest: w.base, map: source.swap }))
-        .pipe(buffer.log.compilation())
-        .pipe(babel())
-        .pipe(
-          buffer.rename(file =>
-            path.resolve(file.base, source.swap(file.relative))
+const sync = {
+  exec: function(command, name, cwd = process.cwd()) {
+    return execSync(command, {
+      cwd,
+      env: process.env,
+      stdio: "inherit",
+    });
+  },
+
+  spawn: function(command, args = [], cwd = process.cwd()) {
+    return spawnSync(command, args, {
+      cwd,
+      env: process.env,
+      stdio: "inherit",
+    }).on("error", process.exit);
+  },
+};
+
+const build = {
+  babel: function(ws) {
+    return merge(
+      ws.map(w => {
+        return gulp
+          .src(source.glob(w.src), { base: w.base })
+          .pipe(buffer.log.error())
+          .pipe(newer({ dest: w.base, map: source.swap }))
+          .pipe(buffer.log.compilation())
+          .pipe(babel())
+          .pipe(
+            buffer.rename(file =>
+              path.resolve(file.base, source.swap(file.relative))
+            )
           )
-        )
-        .pipe(gulp.dest(w.base));
-    })
-  );
+          .pipe(gulp.dest(w.base));
+      })
+    );
+  },
+
+  antask: function(options = {}) {
+    const cli = path.resolve(process.cwd(), "bin/antask");
+
+    let command = `node ${cli}`;
+
+    const run = function(ws = "", cwd = process.cwd()) {
+      sync.exec(`${command} run build`);
+    };
+
+    let packages = [];
+    let promise = Promise.resolve();
+
+    const { packages: pkgs } = options;
+
+    packages = typeof pkgs !== "undefined" ? pkgs : compact(["."]);
+
+    packages.forEach(pkg => {
+      promise = promise.then(() => run(trimEnd(pkg, "/*")));
+    });
+
+    return undefined;
+  },
 };
 
 const clean = function(ws) {
@@ -161,8 +203,12 @@ gulp.task(
 gulp.task(
   "build",
   gulp.series("clean", "clean:lib", function() {
-    return build(workspace);
+    return build.babel(workspace);
   })
 );
+
+gulp.task("build:packages", function() {
+  return build.antask(workspace);
+});
 
 gulp.task("default", gulp.series("build"));

@@ -28,7 +28,7 @@
  */
 
 import { colorful } from 'colorful';
-import program from 'commander';
+import program, { help } from 'commander';
 import { start } from 'gulp';
 import { Logger } from "../utils/index";
 
@@ -43,7 +43,7 @@ program.parse(process.argv);
 const task = program.args[0];
 
 if (!task) {
-  program.help();
+  help();
 } else {
   Logger.stats("task run", task);
 

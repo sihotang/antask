@@ -1,6 +1,6 @@
 "use strict";
 
-module.exports = function (api) {
+module.exports = function(api) {
   const env = api.env();
 
   let envOpts = {
@@ -31,21 +31,22 @@ module.exports = function (api) {
   }
 
   return {
-    // ignore: [
-    //   "packages/*/lib",
-    // ],
-    presets: [
-      ["@babel/preset-env", envOpts],
-    ],
+    sourceType: "script",
+    comments: false,
+    ignore: ["packages/*/lib"],
+    presets: [["@babel/preset-env", envOpts]],
     plugins: [
       "@babel/plugin-transform-flow-strip-types",
       ["@babel/plugin-transform-arrow-functions", { spec: true }],
       ["@babel/plugin-transform-classes", { loose: true }],
-      ["@babel/plugin-transform-modules-commonjs", {
-        lazy: true,
-        strictMode: true,
-        strict: false,
-      }],
+      [
+        "@babel/plugin-transform-modules-commonjs",
+        {
+          lazy: true,
+          strictMode: true,
+          strict: false,
+        },
+      ],
       ["@babel/plugin-transform-strict-mode", { strictMode: true }],
       ["@babel/plugin-transform-template-literals", { spec: true }],
       "@babel/plugin-transform-property-mutators",
@@ -55,20 +56,23 @@ module.exports = function (api) {
       ["@babel/plugin-proposal-class-properties", { loose: true }],
       "@babel/plugin-proposal-export-namespace-from",
       "@babel/plugin-proposal-numeric-separator",
-      ["@babel/plugin-proposal-object-rest-spread", {
-        useBuiltIns: true,
-        loose: true,
-      }],
+      [
+        "@babel/plugin-proposal-object-rest-spread",
+        {
+          useBuiltIns: true,
+          loose: true,
+        },
+      ],
     ].filter(Boolean),
     overrides: [
       {
-        test: "src",
+        test: ["src", "test", "packages/*/src", "packages/*/test"],
+        sourceType: "unambiguous",
         plugins: [
           "babel-plugin-transform-charcodes",
           ["@babel/plugin-transform-for-of", { assumeArray: true }],
         ],
       },
     ],
-    comments: false,
   };
 };
